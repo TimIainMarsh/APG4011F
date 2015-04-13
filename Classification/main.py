@@ -27,9 +27,8 @@ def computeNormals(PointsXYZ):
     f1,f2 = PointsXYZ[:int(len(PointsXYZ)/2)],PointsXYZ[int(len(PointsXYZ)/2):]
     one, two = f1[:int(len(f1)/2)],f1[int(len(f1)/2):]
     three,four = f2[:int(len(f2)/2)],f2[int(len(f2)/2):]
-    print(len(one),len(two),len(three),len(four))
-    tree = cKDTree(PointsXYZ)
-    jobs = [[one,tree],[two,tree],[three,tree],[four,tree]]
+
+    jobs = [[one,PointsXYZ],[two,PointsXYZ],[three,PointsXYZ],[four,PointsXYZ]]
     
     L1,L2,L3,L4= p.starmap(Normals,jobs)
     PointsNormal = L1+L2+L3+L4
@@ -37,6 +36,7 @@ def computeNormals(PointsXYZ):
 
 def Normals(Points,TreePoints):
     PointsNormal = []
+    tree = cKDTree(TreePoints)
         
     for point in Points:
         idx = find_index_of_nearest_xyz(tree, point)
@@ -88,14 +88,10 @@ def signalFinish():
 def Read_Points(filename):
     Points = []
     f = open(filename , 'r')
-    count = 0
     for line in f.readlines():
-        count += 1
         read = []
-        sp = line.split(';')
+        sp = line.split(' ')
         Points.append([float(sp[0]),float(sp[1]),float(sp[2])])
-        #if count == 1000000:
-             #  break
     f.close()
     return Points
 
@@ -110,7 +106,7 @@ def WriteFile(PointsNormal,fileName):
 
 @log_timing_decorator('main',logger)
 def main():
-    filename = 'Points.xyz'
+    filename = 'jameson.xyz'
     PointsXYZ = Read_Points(filename)
     '''Calculate Normals'''
     PointsNormal = computeNormals(PointsXYZ)
