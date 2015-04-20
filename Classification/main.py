@@ -15,7 +15,7 @@ logger.error('Start')
 
 
 def find_index_of_nearest_xyz(tree, point):
-    dist , idx = tree.query(point,k=100)
+    dist , idx = tree.query(point,k=20)
     return idx
 
 
@@ -45,7 +45,6 @@ def Normals(Points,TreePoints):
             neighbors.append(TreePoints[i])
         normal = NormalCalc(neighbors)
         PointsNormal.append([point[0],point[1],point[2],len(idx),normal[0],normal[1],normal[2],0])
-    ang_classing(PointsNormal)
     return PointsNormal
 
 def NormalCalc(neighbors):
@@ -90,7 +89,7 @@ def Read_Points(filename):
     f = open(filename , 'r')
     for line in f.readlines():
         read = []
-        sp = line.split(' ')
+        sp = line.split(';')
         Points.append([float(sp[0]),float(sp[1]),float(sp[2])])
     f.close()
     return Points
@@ -106,11 +105,12 @@ def WriteFile(PointsNormal,fileName):
 
 @log_timing_decorator('main',logger)
 def main():
-    filename = 'jameson.xyz'
+    filename = 'Points.xyz'
     PointsXYZ = Read_Points(filename)
     '''Calculate Normals'''
     PointsNormal = computeNormals(PointsXYZ)
     '''calculate the angle from vertical to the normal'''
+    ang_classing(PointsNormal)
     fileName = 'PointsAfter.xyz'
     WriteFile(PointsNormal,fileName)
 
