@@ -1,6 +1,5 @@
 \contentsline {section}{\numberline {1}Introduction}{2}
 \contentsline {section}{\numberline {2}Background to the Problem}{2}
-\contentsline {section}{\numberline {3}Problem Statement}{2}
-\contentsline {section}{\numberline {4}Method}{2}
-\contentsline {section}{\numberline {5}Discussion}{2}
-\contentsline {section}{\numberline {6}Conclusion}{2}
+\contentsline {section}{\numberline {3}Method}{3}
+\contentsline {section}{\numberline {4}Results}{3}
+\contentsline {section}{\numberline {5}Additional Questions}{5}
