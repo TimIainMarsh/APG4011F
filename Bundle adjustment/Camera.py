@@ -1,4 +1,4 @@
-
+import math as mt
 class Camera(dict):
         def __init__(self,c):
             self.SensorDimentions =  [230,230]
@@ -9,22 +9,44 @@ class Camera(dict):
 
 
 class images(dict):
-    def __init__(self,Xo,Yo,Zo,w,t,k,scale):
+    kind = 'ImageFromCamera'
+    def __init__(self,Xo,Yo,Zo,w,p,k,scale):
             self.scale = scale
         
             self.Xo = Xo
             self.Yo = Yo
             self.Zo = Zo
 
-            self.w =  w
-            self.t = t
-            self.k = k
+            self.w = mt.radians(w)
+            self.p = mt.radians(p)
+            self.k = mt.radians(k)
             '''each image is associated with where the camera
                was at the moment it took the picture'''
 
+class Ray(object):
+    def __init__(self,imagePoint,objectPoint):
+        self.imagePoint = imagePoint
+        self.objectPoint = objectPoint
+
 class imagePoint(object):
-    def __init__(self,xo,yo,scale):
+    kind = 'PointInImage'
+    def __init__(self,xi,yi,scale):
         self.scale = scale
-        self.xo = xo
-        self.yo = yo
+        self.xi = xi
+        self.yi = yi
+        ''' each ray belongs to an image. there are as many points as rays'''
+        self.xi_new = None
+        self.yi_new = None
+    def recalculatedImagePoint():
+        self.xi_new = x
+        self.yi_new = y
+
+
+class objectPoint(object):
+    kind = 'PointInObject'
+    def __init__(self,X,Y,Z):
+        # self.scale = scale
+        self.X = X
+        self.Y = Y
+        self.Z = Z
         ''' each ray belongs to an image. there are as many points as rays'''

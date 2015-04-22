@@ -113,9 +113,8 @@ def main():
     ang_classing(PointsNormal)
     fileName = 'PointsAfter.xyz'
     WriteFile(PointsNormal,fileName)
-
-    
     signalFinish()
+
 
 if __name__ == '__main__':
     from time import gmtime, strftime
