@@ -1,0 +1,29 @@
+    # scale = image.scale
+    # R = rotations(image)
+
+    # print(objectPoint.X,objectPoint.Y,objectPoint.Z)
+
+    # diff = np.matrix([[objectPoint.X-image.Xo],
+    #                   [objectPoint.Y-image.Zo],
+    #                   [objectPoint.Z-image.Yo]])
+
+    # imagePointVector = (1/scale)* R * (diff)
+    # ''''''
+    # x = -c * ((R[0,0]* (objectPoint.X-image.Xo) + R[0,1]* (objectPoint.Y-image.Yo) + R[0,2]* (objectPoint.Z-image.Zo))/
+    #           (R[2,0]* (objectPoint.X-image.Xo) + R[2,1]* (objectPoint.Y-image.Yo) + R[2,2]* (objectPoint.Z-image.Zo)))
+
+    # y = -c * ((R[1,0]* (objectPoint.X-image.Xo) + R[1,1]* (objectPoint.Y-image.Yo) + R[1,2]* (objectPoint.Z-image.Zo))/
+    #           (R[2,0]* (objectPoint.X-image.Xo) + R[2,1]* (objectPoint.Y-image.Yo) + R[2,2]* (objectPoint.Z-image.Zo)))
+    # ''''''
+    # thing = np.matrix([[(R[0,0]* (objectPoint.X-image.Xo) + R[0,1]* (objectPoint.Y-image.Yo) + R[0,2]* (objectPoint.Z-image.Zo))],
+    #                    [(R[1,0]* (objectPoint.X-image.Xo) + R[1,1]* (objectPoint.Y-image.Yo) + R[1,2]* (objectPoint.Z-image.Zo))],
+    #                    [(R[2,0]* (objectPoint.X-image.Xo) + R[2,1]* (objectPoint.Y-image.Yo) + R[2,2]* (objectPoint.Z-image.Zo))]])
+
+    # img = (1/scale) * thing
+    # ''''''
+    # print(ray.imagePoint.xi,round(float(imagePointVector[0]),4), x,img[0])
+    # print(ray.imagePoint.yi,round(float(imagePointVector[1]),4),y,img[1])
+    # print('                                                                     ',round(float(imagePointVector[2]),4))
+
+for i in range(1):
+  print (i)
