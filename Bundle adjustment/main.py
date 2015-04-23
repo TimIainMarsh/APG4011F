@@ -3,8 +3,6 @@ from Camera import images
 from Camera import imagePoint,objectPoint, Ray
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyArrowPatch
-from mpl_toolkits.mplot3d import proj3d
 import random as rd
 import math as mt
 import numpy as np
