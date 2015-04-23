@@ -1,37 +1,64 @@
 from Camera import Camera
 from Camera import images
 from Camera import imagePoint,objectPoint, Ray
-
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
 import random as rd
 import math as mt
 import numpy as np
 
+camera1x,camera1y,camera1z = 0,0,60
+camera2x,camera2y,camera2z = 20,1,60
+
+
+def plot(Cameras):
+    x = []
+    y = []
+    z = []
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    
+    for image_id,image in Cameras.items():
+
+        x.append(image.Xo)
+        y.append(image.Yo)
+        z.append(image.Zo)
+
+        for ray_id,ray in image.items():
+            # print(ray.objectPoint.X,ray.objectPoint.Y,ray.objectPoint.Z)
+            x.append(float(ray.objectPoint.X))
+            y.append(float(ray.objectPoint.Y))
+            z.append(float(ray.objectPoint.Z))
+    ax.scatter(x, y, z)
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
+    plt.show()   
+        
 def makeCamera():
-    c = 30
+    c = 0.0030
     camera = Camera(c)
     
-    for i in range(1,3):
-        scale = 2000
-        if i == 1:
-            camera[i] = images(100,100,1000,0,0,0,scale)
-        elif i == 2:
-            camera[i] = images(120,120,1000,0,0,0,scale)
+    for i in range(1):
+        scale = 20000
+        camera[i] = images(camera1x,camera1y,camera1z,0,0,30,scale)
 
-        for j in range(1,37):
-            scale = (2000 + (rd.random()*10))
+        for j in range(100):
+            scale = (20000 + (rd.random()*10))
             camera[i][j] = setRay(imagePoint(0,0,scale),objectPoint(0,0,0))
+    Give_Ray_Grid(camera)
     return camera
 
 def setRay(one,two):
     return Ray(one,two)
 
 def Give_Ray_Grid(Cameras):
-    for i in range(1,3):
-        count = 1
-        for r in range(1,7):
-            for c in range(1,7):
-                Cameras[i][count].imagePoint.xi = (r-3)
-                Cameras[i][count].imagePoint.yi = (c-3)
+    for i in range(1):
+        count = 0
+        for r in range(10):
+            for c in range(10):
+                Cameras[i][count].imagePoint.xi = (r-3)/1000
+                Cameras[i][count].imagePoint.yi = (c-3)/1000
                 count += 1
 
 def rotations(image):
@@ -69,52 +96,44 @@ def calculate_OP(imagePoint,objectPoint,image,c):
                              [image.Yo],
                              [image.Zo]])
     obj = (scale * R * imagePointVector) + imageCenter
-    print(obj)
+    # print(obj)
     objectPoint.X = float(obj[0])
     objectPoint.Y = float(obj[1])
     objectPoint.Z = float(obj[2])
 
-def recalculate_imagePoint(Cameras):
-    obspts = []
+def calculate_imagePoint(Cameras):
     for image_id,image in Cameras.items():
+        print('number')
+        c = Cameras.c
         for ray_id,ray in image.items():
-            x,y,z = ray.objectPoint.X,ray.objectPoint.Y,ray.objectPoint.Z
-            obspts.append([x,y,z])
+            imagePoint = ray.imagePoint
+            objectPoint = ray.objectPoint
+            calculate_IP(imagePoint,objectPoint,image,c)
 
-    # print(obspts)
+def calculate_IP(imagePoint,objectPoint,image,c):
     pass
+def get_objectCoordList(image):
+    ocl = []
+    for ray_id,ray in image.items():
+        o = ray.objectPoint
+        ocl.append([o.X,o.Y,o.Z])
+    return ocl
 
 if __name__ == '__main__':
+    '''create the first camera and popylate its image coords'''
     Cameras = makeCamera()
-    Give_Ray_Grid(Cameras)
+    ''' solving for the object coords from the first image'''
     calculate_objectPoint(Cameras)
+    '''Creating an object coordinate list. so that i can sole it in 2nd image without 
+        first image being present'''
+    objectCoordList = get_objectCoordList(Cameras[0])
 
-    # recalculate_imagePoint(Cameras)
+    Cameras[1] = images(camera2x,camera2y,camera2z,5,5,45,20000)
+
+    print (objectCoordList)
+
+    # calculate_imagePoint(Cameras)
 
             
 
-    x = [100,200]
-    y = [100,200]
-    z = [100,100]
-    for image_id,image in Cameras.items():
-        for ray_id,ray in image.items():
-            print(ray.objectPoint.X,ray.objectPoint.Y,ray.objectPoint.Z)
-            x.append(float(ray.objectPoint.X))
-            y.append(float(ray.objectPoint.Y))
-            z.append(float(ray.objectPoint.Z))
-
-
-    from mpl_toolkits.mplot3d import Axes3D
-    import matplotlib.pyplot as plt
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(x, y, z)
-    ax.set_xlabel('X Label')
-    ax.set_ylabel('Y Label')
-    ax.set_zlabel('Z Label')
-    plt.show()   
-        
-
-
-
-
+    plot(Cameras)
