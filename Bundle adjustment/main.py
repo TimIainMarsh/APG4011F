@@ -129,6 +129,7 @@ if __name__ == '__main__':
     objectCoordList = get_objectCoordList(Cameras[0])
 
     Cameras[1] = images(camera2x,camera2y,camera2z,5,5,45,20000)
+<<<<<<< HEAD
 
     print (objectCoordList)
 
@@ -138,7 +139,13 @@ if __name__ == '__main__':
 
     plot(Cameras)
 
+=======
+>>>>>>> origin/master
 
+    print (objectCoordList)
 
+    # calculate_imagePoint(Cameras)
 
+            
 
+    plot(Cameras)
