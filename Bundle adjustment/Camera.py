@@ -1,7 +1,7 @@
 import math as mt
 class Camera(dict):
         def __init__(self,c):
-            self.SensorDimentions =  [230,230]
+            self.SensorDimentions =  [0.230,0.230]
             self.c = c
             '''camera layer not really nessisary it just stores c and sensor dim'''
 
@@ -32,16 +32,13 @@ class Ray(object):
 
 class imagePoint(object):
     kind = 'PointInImage'
-    def __init__(self,xi,yi,scale):
+    def __init__(self,xi,yi,zi,scale):
         self.scale = scale
         self.xi = xi
         self.yi = yi
+        self.zi = -zi
         ''' each ray belongs to an image. there are as many points as rays'''
-        self.xi_new = None
-        self.yi_new = None
-    def recalculatedImagePoint():
-        self.xi_new = x
-        self.yi_new = y
+
 
 
 class objectPoint(object):

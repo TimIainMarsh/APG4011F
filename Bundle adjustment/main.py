@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 import random as rd
 import math as mt
 import numpy as np
-
-camera1x,camera1y,camera1z = 0,0,60
-camera2x,camera2y,camera2z = 20,1,60
+from random import randrange
+camera1x,camera1y,camera1z = 0,0,65
+camera2x,camera2y,camera2z = 50,50,61
 
 
 def plotOBJ(Cameras):
@@ -39,9 +39,9 @@ def plotOBJ(Cameras):
 
     for ray_id,ray in Cameras[1].items():
         # print(ray.objectPoint.X,ray.objectPoint.Y,ray.objectPoint.Z)
-        x.append(float(ray.objectPoint.X+10))
-        y.append(float(ray.objectPoint.Y+10))
-        z.append(float(ray.objectPoint.Z+10))
+        x.append(float(ray.objectPoint.X))
+        y.append(float(ray.objectPoint.Y))
+        z.append(float(ray.objectPoint.Z))
                  
     ax.scatter(x, y, z,color = 'b')
     ax.set_xlabel('X Label')
@@ -62,8 +62,9 @@ def plotIMG(Cameras):
             # print(ray.objectPoint.X,ray.objectPoint.Y,ray.objectPoint.Z)
             x.append(float(ray.imagePoint.xi))
             y.append(float(ray.imagePoint.yi))
-            # z.append(float(Cameras.c))
-    ax.scatter(x, y)
+            z.append(float(ray.imagePoint.zi))
+
+    ax.scatter(x, y,z)
     ax.set_xlabel('X Label')
     ax.set_ylabel('Y Label')
     ax.set_zlabel('Z Label')
@@ -79,19 +80,22 @@ def makeCamera():
 
         for j in range(100):
             scale = (20000 + (rd.random()*10))
-            camera[i][j] = setRay(imagePoint(0,0,scale),objectPoint(0,0,0))
-    Give_Ray_Grid(camera[0])
+            camera[i][j] = setRay(imagePoint(0,0,camera.c,scale),objectPoint(0,0,0))
+    Give_Ray_Grid(camera.SensorDimentions,camera[0])
     return camera
 
 def setRay(one,two):
     return Ray(one,two)
 
-def Give_Ray_Grid(image):
+def Give_Ray_Grid(dim,image):
     count = 0
+    rngX = (dim[0]/2.0)*1000
+    rngY = (dim[1]/2.0)*1000
+
     for r in range(10):
         for c in range(10):
-            image[count].imagePoint.xi = (r-3)/1000
-            image[count].imagePoint.yi = (c-3)/1000
+            image[count].imagePoint.xi = randrange(-rngX,rngX)/1000
+            image[count].imagePoint.yi = randrange(-rngY,rngY)/1000
             count += 1
 
 def rotations(image):
@@ -145,7 +149,7 @@ def calculate_imagePoint(c,image,objectCoordList):
     count = 0
     for obj_id,obj in objectCoordList.items():
 
-        image[count] = setRay(imagePoint(0,0,20000),objectPoint(0,0,0))
+        image[count] = setRay(imagePoint(0,0,c,20000),objectPoint(0,0,0))
         X = float(obj[0])
         Y = float(obj[1])
         Z = float(obj[2])
@@ -171,30 +175,41 @@ def get_objectCoordList(image):
     ocl = {}
     for ray_id,ray in image.items():
         o = ray.objectPoint
-        ocl[ray_id] = ([o.X,o.Y,o.Z])
+        ocl[ray_id] = ([o.X+(rd.random()*10),o.Y+(rd.random()*10),o.Z+(rd.random()*10)])
     return ocl
 
 if __name__ == '__main__':
     '''create the first camera and popylate its image coords'''
+    
     Cameras = makeCamera()
+    
     ''' solving for the object coords from the first image'''
 
     calculate_objectPoint(Cameras.c, Cameras[0])
+
     '''Creating an object coordinate list. so that i can solve it in 2nd image without 
         first image being present'''
-
     objectCoordList = get_objectCoordList(Cameras[0])
 
-    '''                 Xo,  Yo,  Zo,  w,   p,   k,   scale'''
+    '''                 Xo,           Yo,  Zo      w, p,k,scale'''
     Cameras[1] = images(camera2x,camera2y,camera2z,0,0,0,20000)
 
-    # print (objectCoordList)
-
+    
+    '''calculate img coords from list created'''
     calculate_imagePoint(Cameras.c,Cameras[1],objectCoordList)
+
+    '''re calculating object points only using 2nd camera''' 
     calculate_objectPoint(Cameras.c, Cameras[1])
     # objectCoordList = get_objectCoordList(Cameras[0])
 
     for ray_id,ray in Cameras[0].items():
         print(ray.objectPoint.X,ray.objectPoint.Y)
 
+
+
+    print('camera 1 = red, camera 2 = blue')
+    
+    '''plotting everything'''
+    
+    plotIMG(Cameras)
     plotOBJ(Cameras)
