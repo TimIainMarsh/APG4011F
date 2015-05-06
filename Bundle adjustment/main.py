@@ -11,6 +11,7 @@ camera1x,camera1y,camera1z = 0,0,65
 camera2x,camera2y,camera2z = 50,50,61
 
 
+
 def plotOBJ(Cameras):
     x = []
     y = []
