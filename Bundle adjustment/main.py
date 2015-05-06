@@ -7,13 +7,13 @@ import random as rd
 import math as mt
 import numpy as np
 from random import randrange
-camera1x,camera1y,camera1z = 0,0,65
-camera2x,camera2y,camera2z = 50,50,61
+import LeastSquares as LS
 
 
 
 
-
+camera1x,camera1y,camera1z = 0,0,60
+camera2x,camera2y,camera2z = 500,0,60
 
 def plotOBJ(Cameras):
     x = []
@@ -80,11 +80,11 @@ def makeCamera():
     
     for i in range(1):
         scale = 20000
-        camera[i] = images(camera1x,camera1y,camera1z,0,0,30,scale)
+        camera[i] = images(camera1x,camera1y,camera1z,0,0,0,scale)
 
         for j in range(100):
             scale = (20000 + (rd.random()*10))
-            camera[i][j] = setRay(imagePoint(0,0,camera.c,scale),objectPoint(0,0,0))
+            camera[i][j] = Ray(imagePoint(0,0,camera.c,scale),objectPoint(0,0,0))
     Give_Ray_Grid(camera.SensorDimentions,camera[0])
     return camera
 
@@ -102,20 +102,6 @@ def Give_Ray_Grid(dim,image):
             image[count].imagePoint.yi = randrange(-rngY,rngY)/1000
             count += 1
 
-def rotations(image):
-    Rp = np.matrix([[mt.cos(image.p),0 ,-mt.sin(image.p)],
-                    [0              ,1 ,               0],
-                    [mt.sin(image.p),0 ,mt.cos(image.p)]])
-
-    Rk = np.matrix([[mt.cos(image.k) ,mt.sin(image.k),0],
-                    [-mt.sin(image.k),mt.cos(image.k),0],
-                    [0               ,0              ,1]])
-
-    Rw = np.matrix([[1                 ,0,              0],
-                    [0,mt.cos(image.w) ,mt.sin(image.w)],
-                    [0,-mt.sin(image.w),mt.cos(image.w)]])
-    return (Rp * Rk * Rw)
-
 def calculate_objectPoint(c,image):
     for ray_id,ray in image.items():
         imagePoint = ray.imagePoint
@@ -126,7 +112,7 @@ def calculate_OP(imagePoint,objectPoint,image,c):
     '''Calculates object point from image Point'''
     scale = imagePoint.scale
 
-    R = rotations(image)
+    R = LS.rotations(image)
     # print(R)
     imagePointVector = np.matrix([[imagePoint.xi],
                                   [imagePoint.yi],
@@ -149,7 +135,7 @@ def calculate_OP(imagePoint,objectPoint,image,c):
 #             calculate_IP(imagePoint,objectPoint,image,c)
 
 def calculate_imagePoint(c,image,objectCoordList):
-    R = rotations(image)
+    R = LS.rotations(image)
     count = 0
     for obj_id,obj in objectCoordList.items():
 
@@ -163,7 +149,7 @@ def calculate_imagePoint(c,image,objectCoordList):
                                   [(R[2,0]* (X-image.Xo) + R[2,1]* (Y-image.Yo) + R[2,2]* (Z-image.Zo))]])
 
         imgPTS = (1/image.scale) * intermediate
-        print(imgPTS[0],imgPTS[1])
+        # print(imgPTS[0],imgPTS[1])
         image[count].imagePoint.xi = float(imgPTS[0])
         image[count].imagePoint.yi = float(imgPTS[1])
 
@@ -206,14 +192,19 @@ if __name__ == '__main__':
     calculate_objectPoint(Cameras.c, Cameras[1])
     # objectCoordList = get_objectCoordList(Cameras[0])
 
-    for ray_id,ray in Cameras[0].items():
-        print(ray.objectPoint.X,ray.objectPoint.Y)
+    # for ray_id,ray in Cameras[0].items():
+    #     print(ray.objectPoint.X,ray.objectPoint.Y)
 
+
+    ''' cam 1 - img - obj
+        cam 2 - img - obj'''
+    '''from the image points of the two points calculating the coresponding object points from a homogenious set of points'''\
+    '''cloning image 1 to 'newCam' without orr params'''
+    Cameras['newCam'] = Cameras[0]
+    Cameras['newCam'].clearParams()
+    LS.calcOBJpoints(Cameras['newCam'])
 
 
     print('camera 1 = red, camera 2 = blue')
     
     '''plotting everything'''
-    
-    plotIMG(Cameras)
-    plotOBJ(Cameras)

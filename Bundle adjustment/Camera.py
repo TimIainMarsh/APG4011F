@@ -22,8 +22,16 @@ class images(dict):
             self.k = mt.radians(k)
             '''each image is associated with where the camera
                was at the moment it took the picture'''
-    def set_Params():
-        pass
+    def clearParams(self):
+        self.scale = None
+
+        self.Xo = None
+        self.Yo = None
+        self.Zo = None
+
+        self.w = None
+        self.p = None
+        self.k = None
 
 class Ray(object):
     def __init__(self,imagePoint,objectPoint):
