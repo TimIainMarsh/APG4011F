@@ -190,21 +190,24 @@ if __name__ == '__main__':
 
     '''re calculating object points only using 2nd camera''' 
     calculate_objectPoint(Cameras.c, Cameras[1])
-    # objectCoordList = get_objectCoordList(Cameras[0])
 
-    # for ray_id,ray in Cameras[0].items():
-    #     print(ray.objectPoint.X,ray.objectPoint.Y)
 
 
     ''' cam 1 - img - obj
         cam 2 - img - obj'''
+
+
+    
+
+
     '''from the image points of the two points calculating the coresponding object points from a homogenious set of points'''\
     '''cloning image 1 to 'newCam' without orr params'''
+
     Cameras['newCam'] = Cameras[0]
     Cameras['newCam'].clearParams()
     LS.calcOBJpoints(Cameras['newCam'])
 
 
-    print('camera 1 = red, camera 2 = blue')
+    
     
     '''plotting everything'''
