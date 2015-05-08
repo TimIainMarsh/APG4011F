@@ -82,7 +82,7 @@ def makeCamera():
         scale = 20000
         camera[i] = images(camera1x,camera1y,camera1z,0,0,0,scale)
 
-        for j in range(100):
+        for j in range(30):
             scale = (20000 + (rd.random()*10))
             camera[i][j] = Ray(imagePoint(0,0,camera.c,scale),objectPoint(0,0,0))
     Give_Ray_Grid(camera.SensorDimentions,camera[0])
@@ -96,11 +96,10 @@ def Give_Ray_Grid(dim,image):
     rngX = (dim[0]/2.0)*1000
     rngY = (dim[1]/2.0)*1000
 
-    for r in range(10):
-        for c in range(10):
-            image[count].imagePoint.xi = randrange(-rngX,rngX)/1000
-            image[count].imagePoint.yi = randrange(-rngY,rngY)/1000
-            count += 1
+    for r in range(30):
+        image[count].imagePoint.xi = randrange(-rngX,rngX)/1000
+        image[count].imagePoint.yi = randrange(-rngY,rngY)/1000
+        count += 1
 
 def calculate_objectPoint(c,image):
     for ray_id,ray in image.items():
@@ -205,7 +204,8 @@ if __name__ == '__main__':
 
     Cameras['newCam'] = Cameras[0]
     Cameras['newCam'].clearParams()
-    LS.calcOBJpoints(Cameras['newCam'])
+    provRx,provRy,provRz = 0,0,0
+    LS.calcOBJpoints(Cameras['newCam'],provRx,provRy,provRz)
 
 
     

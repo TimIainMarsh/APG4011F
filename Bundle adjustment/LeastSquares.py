@@ -2,68 +2,87 @@ import numpy as np
 import math as mt
 import sympy as sy
 
-def calcOBJpoints():
-    '''unknowns'''
+import sys
+sys.setrecursionlimit(5000)
+
+def calcOBJpoints(image,provRx,provRy,provRz):
+    '''given image and c'''
+    '''we have 100 img pts, 100 obj pts
+
+    unknowns'''
 
     Xo = sy.Symbol('Xo')
     Yo = sy.Symbol('Yo')
     Zo = sy.Symbol('Zo')
-    scale = sy.Symbol('scale')
     rx = sy.Symbol('rx')
     ry = sy.Symbol('ry')
     rz = sy.Symbol('rz')
-
-
+    scale = sy.Symbol('scale')
 
     Rx =  np.matrix([[1, 0, 0],
-                        [0, sy.cos(rx), -sy.sin(rx)],
-                        [0, sy.sin(rx), sy.cos(rx)]])
+                     [0, sy.cos(rx), -sy.sin(rx)],
+                     [0, sy.sin(rx), sy.cos(rx)]])
 
     Ry =  np.matrix([[sy.cos(ry), 0, sy.sin(ry)],
-                        [0, 1, 0],
-                        [-sy.sin(ry), 0, sy.cos(ry)]])
+                     [0, 1, 0],
+                     [-sy.sin(ry), 0, sy.cos(ry)]])
 
     Rz =  np.matrix([[sy.cos(rz), -sy.sin(rz), 0],
-                        [sy.sin(rz), sy.cos(rz), 0],
-                        [0, 0, 1]])
+                     [sy.sin(rz), sy.cos(rz), 0],
+                     [0, 0, 1]])
 
-    R = Rx * Ry * Rz
+    RotM = Rx * Ry * Rz
+
+    PerspectiveC = np.matrix([[Xo],
+                              [Yo],
+                              [Zo]])
+    obj = np.matrix([[X],
+                     [Y],
+                     [Z]])
+
+
+    image_coords = scale * RotM * (obj - PerspectiveC)
+    x = image_coords.item(0)
+    y = image_coords.item(1)
+    negative_c = image_coords.item(2)
+
+    A = np.matrix([[0] * (6+len(image)),])
+    A = np.delete(A, (0), axis=0)
+
+    L = np.matrix([[0],])
+    L = np.delete(L, (0), axis=0)
+
+
+    for ray_name, ray in image.items():
+        imageP = ray.imagePoint
+        objP = ray.objectPoint
+
+        dYo = sy.diff(x,Yo).subs(rx,dx)
+        dXo = sy.diff(x,Xo).subs(rx,dx)
+        dZo = sy.diff(x,Zo).subs(rx,dx)
+        dRx = sy.diff(x,rx).subs(rx,dx)
+        dRy = sy.diff(x,ry).subs(rx,dx)
+        dRz = sy.diff(x,rz).subs(rx,dx)
+
+        
+
+        L = np.vstack([L,[imageP.X - x]])
+
+        # A = np.vstack([A,[0,0,0,0,0,0,0]])
+        # A = np.vstack([A,[0,0,0,0,0,0,0]])
 
 
 
-    unknowns = [rx ,ry ,rz ,Xo ,Yo ,Zo ,scale]
 
-    print (unknowns)
-    
 
-    # A = np.zeros(shape=(len(unknowns),len(Obs)))
 
-    # print(A)
+
+
+
+    print (A)
     
 
     return 0
-
-
-calcOBJpoints()
-def rotationsSym():
-    p = sy.Symbol('p')
-    k = sy.Symbol('k')
-    w = sy.Symbol('w')
-
-
-    r11 = sy.cos(p)*sy.cos(k)
-    r12 = -sy.cos(p)*sy.sin(k)
-    r13 = sy.sin(p)
-
-    r21 = sy.sin(w)*sy.sin(p)*sy.cos(k) + sy.cos(w)* sy.sin(k)
-    r22 = -sy.sin(w)*sy.sin(p)*sy.sin(k) + sy.cos(w)* sy.cos(k)
-    r23 = -sy.sin(w)* sy.cos(p)
-
-    r31 = -sy.cos(w)*sy.sin(p)*sy.cos(k) + sy.sin(w)* sy.sin(k)
-    r32 = -sy.cos(w)*sy.sin(p)*sy.sin(k) + sy.sin(w)* sy.cos(k)
-    r33 = -sy.cos(w)* sy.cos(p)
-
-    return r11,r12,r13,r21,r22,r23,r31,r32,r33
 
 
 
@@ -82,6 +101,14 @@ def rotations(image):
                     [0,-mt.sin(image.w),mt.cos(image.w)]])
     return (Rw * Rp * Rk)
 
+''' unknowns are = [ Xo, Yo, Zo, dk, dk, dw, scale(for eash point)]
 
-'''part 2'''
-'''least squares stuff'''
+
+
+
+
+
+
+
+
+'''
