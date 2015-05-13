@@ -12,46 +12,55 @@ import LeastSquares as LS
 
 
 
-camera1x,camera1y,camera1z = 0,0,60
-camera2x,camera2y,camera2z = 500,0,60
-
-def plotOBJ(Cameras):
+camera1x,camera1y,camera1z = 0,0,120
+camera2x,camera2y,camera2z = 1000,0,120
+number = 100
+def PL(ax,Cameras,colour,sensDim):
     x = []
     y = []
     z = []
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
+
     
 
-    x.append(Cameras[0].Xo)
-    y.append(Cameras[0].Yo)
-    z.append(Cameras[0].Zo)
+    x.append(Cameras.Xo)
+    y.append(Cameras.Yo)
+    z.append(Cameras.Zo)
 
-    for ray_id,ray in Cameras[0].items():
+    for ray_id,ray in Cameras.items():
         # print(ray.objectPoint.X,ray.objectPoint.Y,ray.objectPoint.Z)
         x.append(float(ray.objectPoint.X))
         y.append(float(ray.objectPoint.Y))
         z.append(float(ray.objectPoint.Z))
-    ax.scatter(x, y, z,color = 'r')
-    x = []
-    y = []
-    z = []
 
-    x.append(Cameras[1].Xo)
-    y.append(Cameras[1].Yo)
-    z.append(Cameras[1].Zo)
-
-    for ray_id,ray in Cameras[1].items():
-        # print(ray.objectPoint.X,ray.objectPoint.Y,ray.objectPoint.Z)
-        x.append(float(ray.objectPoint.X))
-        y.append(float(ray.objectPoint.Y))
-        z.append(float(ray.objectPoint.Z))
                  
-    ax.scatter(x, y, z,color = 'b')
-    ax.set_xlabel('X Label')
-    ax.set_ylabel('Y Label')
-    ax.set_zlabel('Z Label')
-    plt.show()   
+    ax.scatter(x, y, z,color = colour)
+    ax.set_xlabel('X Axis')
+    ax.set_ylabel('Y Axis')
+    ax.set_zlabel('Z Axis')
+
+    for ray_id,ray in Cameras.items():
+        if checkIfSensor(ray,sensDim):
+            ax.plot([Cameras.Xo, ray.objectPoint.X], [Cameras.Yo, ray.objectPoint.Y], zs=[Cameras.Zo, ray.objectPoint.Z], c=colour)
+
+def checkIfSensor(ray,sensDim):
+    if ray.imagePoint.xi > float(sensDim[0]) or ray.imagePoint.xi < -float(sensDim[0]):
+        return False
+    if ray.imagePoint.yi > float(sensDim[0]) or ray.imagePoint.yi < -float(sensDim[0]):
+        return False
+    return True
+
+def plotOBJ(Cameras):
+    sensDim = Cameras.SensorDimentions
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    colour = ['b','g']
+    for cam_name, camera in Cameras.items():
+        if cam_name == 1:
+            break
+        print(cam_name)
+        PL(ax,camera,colour[cam_name],sensDim)
+
+    plt.show()
 
 def plotIMG(Cameras):
     x = []
@@ -82,7 +91,7 @@ def makeCamera():
         scale = 20000
         camera[i] = images(camera1x,camera1y,camera1z,0,0,0,scale)
 
-        for j in range(30):
+        for j in range(number):
             scale = (20000 + (rd.random()*10))
             camera[i][j] = Ray(imagePoint(0,0,camera.c,scale),objectPoint(0,0,0))
     Give_Ray_Grid(camera.SensorDimentions,camera[0])
@@ -96,7 +105,7 @@ def Give_Ray_Grid(dim,image):
     rngX = (dim[0]/2.0)*1000
     rngY = (dim[1]/2.0)*1000
 
-    for r in range(30):
+    for r in range(number):
         image[count].imagePoint.xi = randrange(-rngX,rngX)/1000
         image[count].imagePoint.yi = randrange(-rngY,rngY)/1000
         count += 1
@@ -202,12 +211,8 @@ if __name__ == '__main__':
     '''from the image points of the two points calculating the coresponding object points from a homogenious set of points'''\
     '''cloning image 1 to 'newCam' without orr params'''
 
-    Cameras['newCam'] = Cameras[0]
-    Cameras['newCam'].clearParams()
-    provRx,provRy,provRz = 0,0,0
-    LS.calcOBJpoints(Cameras['newCam'],provRx,provRy,provRz)
-
-
-    
-    
-    '''plotting everything'''
+    # Cameras['newCam'] = Cameras[0]
+    # Cameras['newCam'].clearParams()
+    # provRx,provRy,provRz = 0,0,0
+    # LS.calcOBJpoints(Cameras['newCam'],provRx,provRy,provRz)
+    plotOBJ(Cameras)

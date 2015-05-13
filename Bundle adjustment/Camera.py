@@ -1,7 +1,7 @@
 import math as mt
 class Camera(dict):
         def __init__(self,c):
-            self.SensorDimentions =  [0.230,0.230]
+            self.SensorDimentions =  [0.23,0.23]
             self.c = c
             '''camera layer not really nessisary it just stores c and sensor dim'''
 
