@@ -12,9 +12,10 @@ import LeastSquares as LS
 
 
 
-camera1x,camera1y,camera1z = 0,0,120
-camera2x,camera2y,camera2z = 1000,0,120
-number = 100
+camera1x,camera1y,camera1z = 0,0,500
+camera2x,camera2y,camera2z = 1000,0,500
+number = 30
+
 def PL(ax,Cameras,colour,sensDim):
     x = []
     y = []
@@ -55,11 +56,10 @@ def plotOBJ(Cameras):
     ax = fig.add_subplot(111, projection='3d')
     colour = ['b','g']
     for cam_name, camera in Cameras.items():
-        if cam_name == 1:
-            break
         print(cam_name)
+        if cam_name == 1: break
         PL(ax,camera,colour[cam_name],sensDim)
-
+    plt.axis('equal')
     plt.show()
 
 def plotIMG(Cameras):

@@ -1,5 +1,5 @@
 \documentclass[11pt,a4paper]{article}
-\title{APG4011F Assignment 2 Report}
+\title{APG4011F Bundle Adjustment Report}
 \date{21 April 2015}
 \author{Tim Marsh}
 
@@ -21,7 +21,7 @@
 	\maketitle
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.7\linewidth]{./UCTcircular_logo1_CMYK}
+		\includegraphics[width=0.7\linewidth]{images/UCTcircular_logo1_CMYK}
 		\label{fig:UCTcircular_logo1_CMYK}
 	\end{figure}
 	\newpage
@@ -77,8 +77,9 @@
 	In the first part ground coordinates are calculated using the collinearity equations. the basic form of the collinearity equations take object points or image points and calculates the other.\\
 	\\
 	
+	
+	\centerline{
 	$
-	\centering
 	\begin{bmatrix}
 		X - Xo \\ 
 		Y - Yo \\ 
@@ -91,8 +92,8 @@
 		-c
 	\end{bmatrix}
 	$
-	where R = $R\kappa R\phi R\omega$ and $k$ = scale\\
-	\\
+	where R = $R\kappa R\phi R\omega$ and $k$ = scale\\}
+	~\\
 	
 	In the second part this formula is reversed so that image coordinates are being calculated from the object points calculated in part 1.
 	
@@ -100,29 +101,52 @@
 	
 	Part 3 consists of calculating the exterior orientation parameters for an image having only image and object points. this is done through least squares. 
 	
-	There are 6 unknowns; $Xo$, $Yo$, $Zo$, $\kappa$, $\phi$, $\omega$ as well as a scale ($k$) for each point. This means that for every point you add in one more unknown must be added. Each point brings 2 equations so there needs to be a minimum of 5 points to solve the single bundle adjustment. this is no problem because we have 30.\\
+	There are 6 unknowns; $Xo$, $Yo$, $Zo$, $\kappa$, $\phi$, $\omega$ as well as a scale ($s_i$) for each point (You can see the new scale being brought in inn the last term of each equation below). This means that for every point you add in one more unknown must be added. Each point brings 3 equations:
 	
-	In part 4 we have a similar problem except that we don't know the object coordinates. so in order to solve this we need to use 2 images simultaneously. of our 30 points we have 25 control points and 5 tie points.
+	\begin{equation}\notag
+	U_i - \tilde{X_i} = \tilde{Y_i} dk + \tilde{Z_i}d\phi + X_o + \tilde{X_i}ds_i
+	\end{equation}
+	\begin{equation}\notag
+	V_i - \tilde{Y_i} = \tilde{Y_i} dk - \tilde{Z_i}d\omega + Y_o + \tilde{Y_i}ds_i
+	\end{equation}
+	\begin{equation}\notag
+	W_i - \tilde{Z_i} = -\tilde{Y_i} dk + \tilde{Y_i}d\omega + Z_o + \tilde{Z_i}ds_i
+	\end{equation}
+	
+	There needs to be a minimum of 9 equations to solve the 6 unknowns as well as the scale being brought in. This is no problem for us because we have 30 points, which are more than enough to solve this.
+	
+	From here we solve the seytem of equations using least squares as we would normal. create the $A$ matrix and $\ell$ matrix then solve for $X$.
+	\begin{equation}
+	X = (A^T A)^{-1} A^T\ell
+	\end{equation}
+	The $X$ matrix will be our 6 unknowns followed by a scale for each point.\\
+	
+	Part 4 is what we call relative orientation, we are taking 2 camera with unknown $Xo$, $Yo$, $Zo$, $\kappa$, $\phi$, $\omega$ and orientating them relative to each other to create a stereo-model. So you would expect there to be 12 unknowns along with the point scales. But this is not solvable because there are to many unknowns. But this is still a solvable problem.
+	We do not need all 12 variables to relativity orientate the 2 images. we only need 5. 5 Rotations or 2 translations and 3 rotations. once the two images are relatively orientated we must transfer them into the object coordinates.
+	
+	This problem is once again solved using least squares.
 	
 	
 	\section{Results}
 	
-	The results of this are hard to showcase with out some graphical representation.
+	The results of this are hard to showcase with out some graphical representation. Starting off with a single camera and its image points then creating its object points results in a situation as shown in Figure 2 below. Figure 2 shows 30 points from a single camera as calculated in part 1. This image was generated using the code after part 1. 
 	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{"/images/one30"}
+		\caption{Single Camera View}
+		\label{fig:oneimage}
+	\end{figure}
 	
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.7\linewidth]{"/images/one image"}
-\caption{}
-\label{fig:oneimage}
-\end{figure}
+	After part 2 and 3 a second camera had been created and displayed as in Figure 3.
+		
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{"/images/two30"}
+		\caption{Two Cameras View }
+		\label{fig:twoimages}
+	\end{figure}
 	
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.7\linewidth]{"/images/two images"}
-\caption{}
-\label{fig:twoimages}
-\end{figure}
-
+	After part 4 the image produces was very much the same as in Figure 3.
 	
 \end{document}	
