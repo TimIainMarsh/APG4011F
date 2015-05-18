@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[12pt,a4paper]{article}
 \title{APG4011F Bundle Adjustment Report}
 \date{21 April 2015}
 \author{Tim Marsh}
@@ -12,7 +12,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 
-\usepackage[margin=1in]{geometry}
+%\usepackage[margin=1in]{geometry}
 
 \graphicspath{ {./} }
 \begin{document}
@@ -116,7 +116,7 @@
 	There needs to be a minimum of 9 equations to solve the 6 unknowns as well as the scale being brought in. This is no problem for us because we have 30 points, which are more than enough to solve this.
 	
 	From here we solve the seytem of equations using least squares as we would normal. create the $A$ matrix and $\ell$ matrix then solve for $X$.
-	\begin{equation}
+	\begin{equation}\notag
 	X = (A^T A)^{-1} A^T\ell
 	\end{equation}
 	The $X$ matrix will be our 6 unknowns followed by a scale for each point.\\
@@ -126,7 +126,7 @@
 	
 	This problem is once again solved using least squares.
 	
-	
+	\newpage
 	\section{Results}
 	
 	The results of this are hard to showcase with out some graphical representation. Starting off with a single camera and its image points then creating its object points results in a situation as shown in Figure 2 below. Figure 2 shows 30 points from a single camera as calculated in part 1. This image was generated using the code after part 1. 
